@@ -4,6 +4,7 @@ import TableRow from './tableRow'
 const ResultTable = ({data=[]}) => {
 
   const [result,setResult] = useState([])
+  const [winner,setWinner] = useState([])
 
   const recursiveProccess = ([first,...rest],pairs={}) => {
     let newPair = {}
@@ -24,6 +25,7 @@ const ResultTable = ({data=[]}) => {
           //console.log('Before spread: ',pairID)
           newPair = {...pairs,
             [pairID]: {
+              pairID: pairID,
               duration: Math.floor((timeEnd-timeBegin)/(1000*60*60*24)),
               projectID: empl.ProjectID,
               Employee1: first.EmpID,
@@ -46,9 +48,9 @@ const ResultTable = ({data=[]}) => {
     const getTeams = async () => {
       let results = await Promise.all(
         data.map( async (proj) => {
-          console.log('Reload Recursive: ',proj)
+          //console.log('Reload Recursive: ',proj)
           let pairs = await PAIRS(proj)
-          console.log(pairs)
+          //console.log(pairs)
           return pairs
         })
       )
@@ -58,7 +60,19 @@ const ResultTable = ({data=[]}) => {
 
     getTeams().then(
       r => {
-        console.log(r)
+        let topEmpl = {}
+        r.forEach( (e) => {
+          Object.keys(e).map( (key) => {
+            topEmpl = {...topEmpl, [key]: Number(topEmpl[key])? Number(topEmpl[key]) + Number(e[key].duration) : Number(e[key].duration) }
+
+          })
+          return topEmpl
+        })
+        const allScores = Object.keys(topEmpl).map( key => [key,topEmpl[key]])
+        const scores = allScores.map( s => s[1])
+        let mx = Math.max(...scores)
+        let winner = allScores.find( element => element[1] === mx)
+        setWinner(winner)
         setResult(r)
     })
   },[])
@@ -77,11 +91,12 @@ const ResultTable = ({data=[]}) => {
             return Object.values(pairs).map( (pair,i) => {
               return (
                 <li key={`${ind}-${i}`}>
-                  <TableRow item={pair} />
+                  <TableRow item={pair} winner={winner} />
                 </li>
               )
             })
           })}
+          {winner!=='' && <h2>{`TopTeam: ${winner[0]} : ${winner[1]}`}</h2>}
       </ul>}
     </div>
   )

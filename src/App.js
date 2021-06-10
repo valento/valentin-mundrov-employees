@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { Button } from 'semantic-ui-react'
+
 import DropFile from './dropFile'
 import ResultTable from './resultTable'
 
@@ -14,6 +16,10 @@ const App = () => {
       Projects.push(first)
    	}
     return teamProj(rest.filter( a => a !== first ),Projects)
+  }
+
+  const clearData = () => {
+    setData([])
   }
 
   const printData = data => {
@@ -35,7 +41,7 @@ const App = () => {
   return (
     <div className="App">
       SiRMA App
-      <DropFile printData={printData} />
+      <DropFile onClear={clearData} printData={printData} />
       {data.length>0 && <ResultTable data={data} />}
     </div>
   )

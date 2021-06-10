@@ -18,6 +18,9 @@
 .results li {
   list-style: none;
 }
+.red {
+  background-color: rgba(200,10,10,.5);
+}
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {

@@ -2,9 +2,9 @@ import React, { useState, useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { Button } from 'semantic-ui-react'
 
-const DropFile = ({printData}) => {
+const DropFile = ({printData,onClear}) => {
 
-  const [filename,setFile] = useState('no file')
+  const [filename,setFile] = useState('No File')
   //const [data,setData] = useState([])
 
   const onDrop = useCallback( async files => {
@@ -19,8 +19,8 @@ const DropFile = ({printData}) => {
   }, [])
 
   const onReset = (e) => {
-    setFile('')
-    //setData([])
+    setFile('No File')
+    onClear()
   }
 
   const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, accept:'.csv,.txt'})
